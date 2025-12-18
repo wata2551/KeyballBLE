@@ -125,8 +125,8 @@
         default_layer_jp {
             bindings = <
 &kp Q             &kp W         &kp E         &kp R                        &kp T                                                             &kp Y        &kp U  &lt 5 I    &kp O    &kp P
-&kp A             &kp S         &kp D         &kp F                        &kp G        &mkp LCLK                          &kp UNDERSCORE    &kp H        &kp J  &kp K      &kp L    &kp MINUS
-&mt LEFT_SHIFT Z  &kp X         &kp C         &kp V                        &kp B        &mkp RCLK                          &kp LEFT_BRACKET  &kp N        &kp M  &kp COMMA  &kp DOT  &mt RIGHT_SHIFT EQUAL
+&kp A             &kp S         &kp D         &kp F                        &kp G        &mkp LCLK                          &kp JP_UNDERSCORE &kp H        &kp J  &kp K      &kp L    &kp MINUS
+&mt LEFT_SHIFT Z  &kp X         &kp C         &kp V                        &kp B        &mkp RCLK                          &kp JP_LBRACKET   &kp N        &kp M  &kp COMMA  &kp DOT  &mt RIGHT_SHIFT JP_EQUAL
 &kp LCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &lt_to_layer_0 6 INT_HENKAN  &lt 2 SPACE  &lt_to_layer_0 3 INT_MUHENKAN      &kp BACKSPACE     &lt 1 ENTER                             &kp DEL
             >;
 
