@@ -30,16 +30,25 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/pointing.h>
 
-// レイヤー番号の定義（間違い防止のため名前で管理）
+// ---------------------------------------------------------
+// レイヤー番号の定義
+// ---------------------------------------------------------
+// 1. まず元の英語配列系のレイヤーを配置
 #define BASE_EN 0
-#define BASE_JP 1
-#define FUNC    2
-#define NUM_EN  3
+#define FUNC    1
+#define NUM_EN  2
+
+// 2. その後ろに日本語配列用のレイヤーを追加
+#define BASE_JP 3
 #define NUM_JP  4
+
+// 3. 最後に「共通で重ねたいレイヤー」を配置（重要！）
+//    これらが後ろにないと、日本語モードでマウス等が動かなくなります
 #define ARROW   5
 #define MOUSE   6
 #define SCROLL  7
 #define SYSTEM  8
+
 
 &mt {
     flavor = "balanced";
@@ -47,9 +56,22 @@
 };
 
 / {
+    // オートマウス設定
+    behavior_listeners {
+        compatible = "zmk,input-behavior-listener";
+        device = <&trackball>;  // キーボードに合わせて変更してください
+        bindings = <&mo MOUSE>; 
+        // 英語ベース(0)と日本語ベース(3)の両方で反応するように設定
+        layers = <BASE_EN BASE_JP>;
+        evt-type = <INPUT_EV_REL>;
+        x-input-code = <INPUT_REL_X>;
+        y-input-code = <INPUT_REL_Y>;
+        scale-multiplier = <1>;
+        scale-divisor = <1>;
+    };
+
     combos {
         compatible = "zmk,combos";
-
         double_quotation {
             bindings = <&kp DOUBLE_QUOTES>;
             key-positions = <20 21>;
@@ -57,71 +79,47 @@
     };
 
     macros {
-        // タップ時にレイヤー0(英語)をベースにするマクロ
-        to_layer_0: to_layer_0 {
+        // 英語ベースに戻る
+        to_base_en: to_base_en {
             compatible = "zmk,behavior-macro-one-param";
             #binding-cells = <1>;
             bindings = <&to BASE_EN &macro_param_1to1 &kp MACRO_PLACEHOLDER>;
-            label = "TO_LAYER_0";
+            label = "TO_BASE_EN";
         };
 
-        // 【必須】タップ時にレイヤー1(日本語)をベースにするマクロ
-        // これがないと日本語使用中に変換キー等を連打した際、英語配列に戻ってしまいます
-        to_layer_1: to_layer_1 {
+        // 日本語ベースに戻る
+        to_base_jp: to_base_jp {
             compatible = "zmk,behavior-macro-one-param";
             #binding-cells = <1>;
             bindings = <&to BASE_JP &macro_param_1to1 &kp MACRO_PLACEHOLDER>;
-            label = "TO_LAYER_1";
+            label = "TO_BASE_JP";
         };
 
-        // 英語プロファイルへ切り替え (Layer 0へ & BT変更)
-        to_prof0: to_prof0_macro {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&to BASE_EN &bt BT_SEL 0>;
-        };
-
-        to_prof1: to_prof1_macro {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&to BASE_EN &bt BT_SEL 1>;
-        };
-
-        to_prof2: to_prof2_macro {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&to BASE_EN &bt BT_SEL 2>;
-        };
-
-        to_prof3: to_prof3_macro {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&to BASE_EN &bt BT_SEL 3>;
-        };
-
-        // 日本語プロファイルへ切り替え (Layer 1へ & BT変更)
-        to_prof4: to_prof4_macro {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&to BASE_JP &bt BT_SEL 4>;
-        };
+        // プロファイル切り替えマクロ
+        to_prof0: to_prof0 { compatible = "zmk,behavior-macro"; #binding-cells = <0>; bindings = <&to BASE_EN &bt BT_SEL 0>; };
+        to_prof1: to_prof1 { compatible = "zmk,behavior-macro"; #binding-cells = <0>; bindings = <&to BASE_EN &bt BT_SEL 1>; };
+        to_prof2: to_prof2 { compatible = "zmk,behavior-macro"; #binding-cells = <0>; bindings = <&to BASE_EN &bt BT_SEL 2>; };
+        to_prof3: to_prof3 { compatible = "zmk,behavior-macro"; #binding-cells = <0>; bindings = <&to BASE_EN &bt BT_SEL 3>; };
+        
+        // 日本語プロファイル用
+        to_prof4: to_prof4 { compatible = "zmk,behavior-macro"; #binding-cells = <0>; bindings = <&to BASE_JP &bt BT_SEL 4>; };
     };
 
     behaviors {
-        // ホールドで指定レイヤー、タップでレイヤー0(英語)に戻りつつキー入力
-        lt_to_layer_0: lt_to_layer_0 {
+        // ホールドでレイヤー、タップで英語ベースへ
+        lt_to_en: lt_to_en {
             compatible = "zmk,behavior-hold-tap";
-            label = "LAYER_TAP_TO_0";
-            bindings = <&mo>, <&to_layer_0>;
+            label = "LT_TO_EN";
+            bindings = <&mo>, <&to_base_en>;
             #binding-cells = <2>;
             tapping-term-ms = <200>;
         };
 
-        // ホールドで指定レイヤー、タップでレイヤー1(日本語)に戻りつつキー入力
-        lt_to_layer_1: lt_to_layer_1 {
+        // ホールドでレイヤー、タップで日本語ベースへ
+        lt_to_jp: lt_to_jp {
             compatible = "zmk,behavior-hold-tap";
-            label = "LAYER_TAP_TO_1";
-            bindings = <&mo>, <&to_layer_1>;
+            label = "LT_TO_JP";
+            bindings = <&mo>, <&to_base_jp>;
             #binding-cells = <2>;
             tapping-term-ms = <200>;
         };
@@ -138,30 +136,22 @@
     keymap {
         compatible = "zmk,keymap";
 
-        /* Layer 0: Default (English) */
+        // ---------------------------------------------------------
+        // 1. 元の英語配列グループ
+        // ---------------------------------------------------------
+        
+        /* Layer 0: BASE_EN (English Default) */
         default_layer {
             bindings = <
 &kp Q             &kp W         &kp E         &kp R                             &kp T                                                             &kp Y        &kp U  &lt ARROW I  &kp O    &kp P
 &kp A             &kp S         &kp D         &kp F                             &kp G        &mkp LCLK                          &kp UNDERSCORE    &kp H        &kp J  &kp K      &kp L    &kp MINUS
 &mt LEFT_SHIFT Z  &kp X         &kp C         &kp V                             &kp B        &mkp RCLK                          &kp LEFT_BRACKET  &kp N        &kp M  &kp COMMA  &kp DOT  &mt RIGHT_SHIFT EQUAL
-&kp LCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &lt_to_layer_0 SYSTEM INT_HENKAN  &lt FUNC SPACE  &lt_to_layer_0 NUM_EN INT_MUHENKAN  &kp BACKSPACE     &lt BASE_JP ENTER                       &kp DEL
+&kp LCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &lt_to_en MOUSE INT_HENKAN        &lt FUNC SPACE  &lt_to_en NUM_EN INT_MUHENKAN      &kp BACKSPACE     &lt BASE_JP ENTER                       &kp DEL
             >;
             sensor-bindings = <&ROTATE SCRL_DOWN SCRL_UP>;
         };
 
-        /* Layer 1: Default (Japanese) - Activated by to_prof4 */
-        default_layer_jp {
-            bindings = <
-&kp Q             &kp W         &kp E         &kp R                             &kp T                                                             &kp Y        &kp U  &lt ARROW I  &kp O    &kp P
-&kp A             &kp S         &kp D         &kp F                             &kp G        &mkp LCLK                          &kp JP_UNDERSCORE &kp H        &kp J  &kp K      &kp L    &kp MINUS
-&mt LEFT_SHIFT Z  &kp X         &kp C         &kp V                             &kp B        &mkp RCLK                          &kp JP_LBRACKET   &kp N        &kp M  &kp COMMA  &kp DOT  &mt RIGHT_SHIFT JP_EQUAL
-/* 修正: タップ時にレイヤー1を維持する lt_to_layer_1 を使用し、親指キーで日本語用NUMレイヤー(NUM_JP)を開く */
-&kp LCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &lt_to_layer_1 SYSTEM INT_HENKAN  &lt FUNC SPACE  &lt_to_layer_1 NUM_JP INT_MUHENKAN  &kp BACKSPACE     &lt BASE_JP ENTER                       &kp DEL
-            >;
-            sensor-bindings = <&ROTATE SCRL_DOWN SCRL_UP>;
-        };
-
-        /* Layer 2: FUNCTION */
+        /* Layer 1: FUNC */
         FUNCTION {
             bindings = <
 &trans  &kp F1  &kp F2   &kp F3   &kp F4                       &kp PLUS      &kp NUMBER_7  &kp NUMBER_8  &kp NUMBER_9  &kp ASTERISK
@@ -171,7 +161,7 @@
             >;
         };
 
-        /* Layer 3: NUM (English) */
+        /* Layer 2: NUM_EN */
         NUM {
             bindings = <
 &kp MINUS                   &kp KP_NUMBER_7  &kp KP_NUMBER_8  &kp KP_NUMBER_9  &kp PLUS                                                     &kp CARET          &kp AMPERSAND         &kp TILDE              &kp EXCLAMATION  &kp AT_SIGN
@@ -181,7 +171,23 @@
             >;
         };
 
-        /* Layer 4: NUM_jp (Japanese) */
+
+        // ---------------------------------------------------------
+        // 2. 追加した日本語配列グループ
+        // ---------------------------------------------------------
+
+        /* Layer 3: BASE_JP (Japanese Default) */
+        default_layer_jp {
+            bindings = <
+&kp Q             &kp W         &kp E         &kp R                             &kp T                                                             &kp Y        &kp U  &lt ARROW I  &kp O    &kp P
+&kp A             &kp S         &kp D         &kp F                             &kp G        &mkp LCLK                          &kp JP_UNDERSCORE &kp H        &kp J  &kp K      &kp L    &kp MINUS
+&mt LEFT_SHIFT Z  &kp X         &kp C         &kp V                             &kp B        &mkp RCLK                          &kp JP_LBRACKET   &kp N        &kp M  &kp COMMA  &kp DOT  &mt RIGHT_SHIFT JP_EQUAL
+&kp LCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &lt_to_jp MOUSE INT_HENKAN        &lt FUNC SPACE  &lt_to_jp NUM_JP INT_MUHENKAN      &kp BACKSPACE     &lt BASE_JP ENTER                       &kp DEL
+            >;
+            sensor-bindings = <&ROTATE SCRL_DOWN SCRL_UP>;
+        };
+
+        /* Layer 4: NUM_JP */
         NUM_jp {
             bindings = <
 &kp MINUS                   &kp KP_NUMBER_7  &kp KP_NUMBER_8  &kp KP_NUMBER_9  &kp JP_PLUS                                                  &kp JP_CARET       &kp JP_AMPERSAND      &kp JP_TILDE           &kp EXCLAMATION   &kp JP_AT
@@ -190,6 +196,12 @@
 &trans                      &trans           &trans           &trans           &trans          &trans                     &trans            &trans                                                                           &kp JP_PIPE
             >;
         };
+
+
+        // ---------------------------------------------------------
+        // 3. 共通・高優先度レイヤーグループ
+        //    (ここにないと日本語レイヤーの上に乗らない)
+        // ---------------------------------------------------------
 
         /* Layer 5: ARROW */
         ARROW {
