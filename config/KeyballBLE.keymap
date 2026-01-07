@@ -31,6 +31,7 @@
 #include <dt-bindings/zmk/pointing.h>
 
 // レイヤー番号の定義（間違い防止のため名前で管理）
+
 #define BASE_EN 0
 #define BASE_JP 1
 #define FUNC    2
@@ -58,6 +59,7 @@
 
     macros {
         // タップ時にレイヤー0(英語)をベースにするマクロ
+
         to_layer_0: to_layer_0 {
             compatible = "zmk,behavior-macro-one-param";
             #binding-cells = <1>;
@@ -67,6 +69,7 @@
 
         // 【必須】タップ時にレイヤー1(日本語)をベースにするマクロ
         // これがないと日本語使用中に変換キー等を連打した際、英語配列に戻ってしまいます
+
         to_layer_1: to_layer_1 {
             compatible = "zmk,behavior-macro-one-param";
             #binding-cells = <1>;
@@ -75,6 +78,7 @@
         };
 
         // 英語プロファイルへ切り替え (Layer 0へ & BT変更)
+
         to_prof0: to_prof0_macro {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
@@ -100,6 +104,7 @@
         };
 
         // 日本語プロファイルへ切り替え (Layer 1へ & BT変更)
+
         to_prof4: to_prof4_macro {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
@@ -109,19 +114,23 @@
 
     behaviors {
         // ホールドで指定レイヤー、タップでレイヤー0(英語)に戻りつつキー入力
+
         lt_to_layer_0: lt_to_layer_0 {
             compatible = "zmk,behavior-hold-tap";
             label = "LAYER_TAP_TO_0";
             bindings = <&mo>, <&to_layer_0>;
+
             #binding-cells = <2>;
             tapping-term-ms = <200>;
         };
 
         // ホールドで指定レイヤー、タップでレイヤー1(日本語)に戻りつつキー入力
+
         lt_to_layer_1: lt_to_layer_1 {
             compatible = "zmk,behavior-hold-tap";
             label = "LAYER_TAP_TO_1";
             bindings = <&mo>, <&to_layer_1>;
+
             #binding-cells = <2>;
             tapping-term-ms = <200>;
         };
@@ -131,6 +140,7 @@
             label = "ROTATE";
             #sensor-binding-cells = <2>;
             bindings = <&msc>, <&msc>;
+
             tap-ms = <20>;
         };
     };
@@ -139,29 +149,33 @@
         compatible = "zmk,keymap";
 
         /* Layer 0: Default (English) */
+
         default_layer {
             bindings = <
-&kp Q             &kp W         &kp E         &kp R                             &kp T                                                             &kp Y        &kp U  &lt ARROW I  &kp O    &kp P
+&kp Q             &kp W         &kp E         &kp R                             &kp T                                                             &kp Y        &kp U  &lt 7 I    &kp O    &kp P
 &kp A             &kp S         &kp D         &kp F                             &kp G        &mkp LCLK                          &kp UNDERSCORE    &kp H        &kp J  &kp K      &kp L    &kp MINUS
 &mt LEFT_SHIFT Z  &kp X         &kp C         &kp V                             &kp B        &mkp RCLK                          &kp LEFT_BRACKET  &kp N        &kp M  &kp COMMA  &kp DOT  &mt RIGHT_SHIFT EQUAL
-&kp LCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &lt_to_layer_0 SYSTEM INT_HENKAN  &lt FUNC SPACE  &lt_to_layer_0 NUM_EN INT_MUHENKAN  &kp BACKSPACE     &lt BASE_JP ENTER                       &kp DEL
+&kp LCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &lt_to_layer_0 SYSTEM INT_HENKAN  &lt 3 SPACE  &lt_to_layer_0 5 INT_MUHENKAN      &kp BACKSPACE     &lt 2 ENTER                             &kp DEL
             >;
+
             sensor-bindings = <&ROTATE SCRL_DOWN SCRL_UP>;
         };
 
         /* Layer 1: Default (Japanese) - Activated by to_prof4 */
+
         default_layer_jp {
             bindings = <
-&kp Q             &kp W         &kp E         &kp R                             &kp T                                                             &kp Y        &kp U  &lt ARROW I  &kp O    &kp P
-&kp A             &kp S         &kp D         &kp F                             &kp G        &mkp LCLK                          &kp JP_UNDERSCORE &kp H        &kp J  &kp K      &kp L    &kp MINUS
-&mt LEFT_SHIFT Z  &kp X         &kp C         &kp V                             &kp B        &mkp RCLK                          &kp JP_LBRACKET   &kp N        &kp M  &kp COMMA  &kp DOT  &mt RIGHT_SHIFT JP_EQUAL
-/* 修正: タップ時にレイヤー1を維持する lt_to_layer_1 を使用し、親指キーで日本語用NUMレイヤー(NUM_JP)を開く */
-&kp LCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &lt_to_layer_1 SYSTEM INT_HENKAN  &lt FUNC SPACE  &lt_to_layer_1 NUM_JP INT_MUHENKAN  &kp BACKSPACE     &lt BASE_JP ENTER                       &kp DEL
+&kp Q             &kp W         &kp E         &kp R                             &kp T                                                              &kp Y        &kp U  &lt 7 I    &kp O    &kp P
+&kp A             &kp S         &kp D         &kp F                             &kp G        &mkp LCLK                          &kp JP_UNDERSCORE  &kp H        &kp J  &kp K      &kp L    &kp MINUS
+&mt LEFT_SHIFT Z  &kp X         &kp C         &kp V                             &kp B        &mkp RCLK                          &kp JP_LBRACKET    &kp N        &kp M  &kp COMMA  &kp DOT  &mt RIGHT_SHIFT JP_EQUAL
+&kp LCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &lt_to_layer_1 SYSTEM INT_HENKAN  &lt 4 SPACE  &lt_to_layer_1 5 INT_MUHENKAN      &kp BACKSPACE      &lt 2 ENTER                             &kp DEL
             >;
+
             sensor-bindings = <&ROTATE SCRL_DOWN SCRL_UP>;
         };
 
         /* Layer 2: FUNCTION */
+
         FUNCTION {
             bindings = <
 &trans  &kp F1  &kp F2   &kp F3   &kp F4                       &kp PLUS      &kp NUMBER_7  &kp NUMBER_8  &kp NUMBER_9  &kp ASTERISK
@@ -172,6 +186,7 @@
         };
 
         /* Layer 3: NUM (English) */
+
         NUM {
             bindings = <
 &kp MINUS                   &kp KP_NUMBER_7  &kp KP_NUMBER_8  &kp KP_NUMBER_9  &kp PLUS                                                     &kp CARET          &kp AMPERSAND         &kp TILDE              &kp EXCLAMATION  &kp AT_SIGN
@@ -182,16 +197,18 @@
         };
 
         /* Layer 4: NUM_jp (Japanese) */
+
         NUM_jp {
             bindings = <
-&kp MINUS                   &kp KP_NUMBER_7  &kp KP_NUMBER_8  &kp KP_NUMBER_9  &kp JP_PLUS                                                  &kp JP_CARET       &kp JP_AMPERSAND      &kp JP_TILDE           &kp EXCLAMATION   &kp JP_AT
-&kp SLASH                   &kp KP_NUMBER_4  &kp KP_NUMBER_5  &kp KP_NUMBER_6  &kp JP_ASTERISK &kp LC(LA(KP_NUMBER_0))    &kp JP_UNDERSCORE &kp JP_QUOTE       &kp JP_DQUOTE         &kp HASH               &kp DOLLAR        &kp PERCENT
-&mt LEFT_SHIFT KP_NUMBER_0  &kp KP_NUMBER_1  &kp KP_NUMBER_2  &kp KP_NUMBER_3  &kp PERIOD      &kp JP_EQUAL               &kp JP_LBRACKET   &kp JP_RBRACKET    &kp JP_LPAREN         &kp JP_RPAREN          &kp JP_LBRACE     &kp JP_RBRACE
-&trans                      &trans           &trans           &trans           &trans          &trans                     &trans            &trans                                                                           &kp JP_PIPE
+&kp MINUS                   &kp KP_NUMBER_7  &kp KP_NUMBER_8  &kp KP_NUMBER_9  &kp JP_PLUS                                                      &kp JP_CARET     &kp JP_AMPERSAND  &kp JP_TILDE   &kp EXCLAMATION  &kp JP_AT
+&kp SLASH                   &kp KP_NUMBER_4  &kp KP_NUMBER_5  &kp KP_NUMBER_6  &kp JP_ASTERISK  &kp LC(LA(KP_NUMBER_0))      &kp JP_UNDERSCORE  &kp JP_QUOTE     &kp JP_DQUOTE     &kp HASH       &kp DOLLAR       &kp PERCENT
+&mt LEFT_SHIFT KP_NUMBER_0  &kp KP_NUMBER_1  &kp KP_NUMBER_2  &kp KP_NUMBER_3  &kp PERIOD       &kp JP_EQUAL                 &kp JP_LBRACKET    &kp JP_RBRACKET  &kp JP_LPAREN     &kp JP_RPAREN  &kp JP_LBRACE    &kp JP_RBRACE
+&trans                      &trans           &trans           &trans           &trans           &trans                       &trans             &trans                                                             &kp JP_PIPE
             >;
         };
 
         /* Layer 5: ARROW */
+
         ARROW {
             bindings = <
 &kp ESCAPE      &kp LC(LS(TAB))         &kp UP_ARROW    &kp LC(TAB)              &trans                       &trans  &trans  &trans  &trans  &trans
@@ -199,10 +216,12 @@
 &kp LEFT_SHIFT  &kp LG(LS(LEFT_ARROW))  &trans          &kp LG(LS(RIGHT_ARROW))  &trans   &trans      &trans  &trans  &trans  &trans  &trans  &trans
 &trans          &trans                  &trans          &trans                   &trans   &trans      &trans  &trans                          &trans
             >;
+
             sensor-bindings = <&inc_dec_kp LC(PAGE_UP) LC(PAGE_DOWN)>;
         };
 
         /* Layer 6: MOUSE */
+
         MOUSE {
             bindings = <
 &trans    &trans     &trans     &trans     &trans                           &trans    &trans     &trans     &trans     &trans
@@ -213,6 +232,7 @@
         };
 
         /* Layer 7: SCROLL */
+
         SCROLL {
             bindings = <
 &trans  &trans  &trans  &trans  &trans                      &trans  &trans  &trans  &trans  &trans
@@ -223,12 +243,13 @@
         };
 
         /* Layer 8: System / BT */
+
         system_layer {
             bindings = <
-&trans  &trans  &trans  &trans  &trans                              &to_prof0     &to_prof1     &to_prof2     &to_prof3     &to_prof4
-&trans  &trans  &trans  &trans  &trans  &trans      &studio_unlock  &trans        &trans        &trans        &trans        &trans
-&trans  &trans  &trans  &trans  &trans  &trans      &bootloader     &trans        &trans        &trans        &trans        &bt BT_CLR
-&trans  &trans  &trans  &trans  &trans  &trans      &trans          &trans                                                  &bt BT_CLR_ALL
+&trans  &trans  &trans  &trans  &trans                              &to_prof0  &to_prof1  &to_prof2  &to_prof3  &to_prof4
+&trans  &trans  &trans  &trans  &trans  &trans      &studio_unlock  &trans     &trans     &trans     &trans     &trans
+&trans  &trans  &trans  &trans  &trans  &trans      &bootloader     &trans     &trans     &trans     &trans     &bt BT_CLR
+&trans  &trans  &trans  &trans  &trans  &trans      &trans          &trans                                      &bt BT_CLR_ALL
             >;
         };
     };
