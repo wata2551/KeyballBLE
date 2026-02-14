@@ -41,6 +41,7 @@
 #define MOUSE   6
 #define SCROLL  7
 #define SYSTEM  8
+#define GAME    9
 
 &mt {
     flavor = "balanced";
@@ -75,6 +76,15 @@
             #binding-cells = <1>;
             bindings = <&to BASE_JP &macro_param_1to1 &kp MACRO_PLACEHOLDER>;
             label = "TO_LAYER_1";
+        };
+
+        // タップ時にレイヤー0(英語)をベースにするマクロ
+
+        to_layer_9: to_layer_9 {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            bindings = <&to GAME &macro_param_1to1 &kp MACRO_PLACEHOLDER>;
+            label = "TO_LAYER_9";
         };
 
         // 英語プロファイルへ切り替え (Layer 0へ & BT変更)
