@@ -265,10 +265,10 @@
 
         layer_9 {
             bindings = <
-&kp ESC         &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &kp Z                              &trans  &trans  &trans  &trans  &trans
-&kp TAB         &kp Q         &kp W         &kp E         &kp R  &kp X               &trans  &trans  &trans  &trans  &trans  &trans
-&kp LEFT_SHIFT  &kp A         &kp C         &kp V         &kp G  &kp LEFT_SHIFT      &trans  &trans  &trans  &trans  &trans  &trans
-&kp LCTRL       &kp T         &kp LEFT_ALT  &kp SPACE     &kp D  &kp F               &trans  &trans                          &to_layer_0 A
+&kp ESC         &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &kp Z                                    &trans        &trans  &trans         &trans  &trans
+&kp TAB         &kp Q         &kp W         &kp E         &kp R  &kp X               &trans        &trans        &trans  &trans         &trans  &trans
+&kp LEFT_SHIFT  &kp A         &kp C         &kp V         &kp G  &kp LEFT_SHIFT      &kp LEFT_ALT  &kp TAB       &trans  &to_layer_0 A  &trans  &trans
+&kp LCTRL       &kp T         &kp LEFT_ALT  &kp SPACE     &kp D  &kp F               &trans        &kp LG(DOWN)                                 &trans
             >;
         };
     };
